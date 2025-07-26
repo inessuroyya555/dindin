@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistem RKAP Puskesmas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .system-title {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: #34495e;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e6ed;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: #a0a0a0;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 38px;
+            cursor: pointer;
+            color: #7f8c8d;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .password-toggle:hover {
+            color: #4CAF50;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #5a6c7d;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .forgot-password {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-password:hover {
+            color: #2E7D32;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.3);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid #c33;
+            display: none;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #363;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            border-left: 4px solid #363;
+            display: none;
+        }
+
+        .demo-credentials {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #6c757d;
+            border: 1px solid #dee2e6;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e6ed;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+            
+            .system-title {
+                font-size: 20px;
+            }
+            
+            .logo {
+                width: 70px;
+                height: 70px;
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo">R</div>
+            <h1 class="system-title">Sistem RKAP Puskesmas</h1>
+            <p class="subtitle">Rekapitulasi Keuangan Berkelanjutan<br>Dinas Kesehatan Kabupaten Jepara</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="loginForm" onsubmit="return handleLogin(event)">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Masukkan username Anda" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Masukkan password Anda" required>
+                <span class="password-toggle" onclick="togglePassword()">👁️</span>
+            </div>
+
+            <div class="remember-forgot">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember" name="remember">
+                    Ingat saya
+                </label>
+                <a href="#" class="forgot-password" onclick="showForgotPassword(); return false;">Lupa password?</a>
+            </div>
+
+            <button type="submit" class="login-btn">Masuk</button>
+        </form>
+
+        <div class="demo-credentials">
+            <strong>Kredensial untuk testing:</strong><br>
+            • <strong>admin</strong> / <strong>admin123</strong> (Administrator)<br>
+            • <strong>dinkes</strong> / <strong>dinkes2025</strong> (Dinas Kesehatan)<br>
+            • <strong>puskesmas1</strong> / <strong>puskesmas123</strong> (Operator)<br>
+            • <strong>lnessuroyya</strong> / <strong>123456</strong> (User)<br>
+            • <strong>demo</strong> / <strong>demo</strong> (Demo User)
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2025 Sistem RKAP Puskesmas - Dinas Kesehatan Kabupaten Jepara</p>
+            <p>Versi 1.0 | Dibuat untuk kemudahan pengelolaan data keuangan</p>
+        </div>
+    </div>
+
+    <script>
+        // Debug mode - hapus ini di production
+        console.log("Login page loaded");
+
+        // Valid credentials
+        const validCredentials = {
+            'admin': { password: 'admin123', role: 'Administrator' },
+            'dinkes': { password: 'dinkes2025', role: 'Dinas Kesehatan' },
+            'puskesmas1': { password: 'puskesmas123', role: 'Operator Puskesmas' },
+            'lnessuroyya': { password: '123456', role: 'User' },
+            'demo': { password: 'demo', role: 'Demo User' },
+            'operator': { password: 'operator123', role: 'Operator' }
+        };
+
+        // Toggle password visibility
+        function togglePassword() {
+            console.log("Toggle password clicked");
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.querySelector('.password-toggle');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
+            }
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            console.log("Login form submitted");
+            
+            const username = document.getElementById('username').value.toLowerCase().trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+            
+            console.log("Username:", username);
+            console.log("Password length:", password.length);
+            
+            // Hide previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+            
+            // Check if username exists
+            if (validCredentials[username]) {
+                console.log("Username found");
+                
+                // Check password
+                if (validCredentials[username].password === password) {
+                    console.log("Password correct");
+                    
+                    const role = validCredentials[username].role;
+                    successMessage.textContent = `Login berhasil sebagai ${role}! Mengalihkan ke dashboard...`;
+                    successMessage.style.display = 'block';
+                    
+                    // Store user info
+                    if (typeof Storage !== "undefined") {
+                        sessionStorage.setItem('currentUser', JSON.stringify({
+                            username: username,
+                            role: role
+                        }));
+                    }
+                    
+                    // Redirect to the actual system after 2 seconds
+                    setTimeout(function() {
+                        console.log("Redirecting to main system...");
+                        window.location.href = 'https://e708715b-481b-47a6-af54-42c3eca36de5-00-1nih43w7uimpx.sisko.replit.dev/';
+                    }, 2000);
+                    
+                    return false;
+                } else {
+                    console.log("Password incorrect");
+                    errorMessage.textContent = 'Password salah! Silakan coba lagi.';
+                }
+            } else {
+                console.log("Username not found");
+                errorMessage.textContent = 'Username tidak ditemukan! Silakan coba lagi.';
+            }
+            
+            // Show error
+            errorMessage.style.display = 'block';
+            
+            // Shake animation
+            const container = document.querySelector('.login-container');
+            container.style.animation = 'shake 0.5s ease-in-out';
+            setTimeout(function() {
+                container.style.animation = 'slideUp 0.6s ease-out';
+            }, 500);
+            
+            // Clear password and focus
+            document.getElementById('password').value = '';
+            document.getElementById('password').focus();
+            
+            return false;
+        }
+
+        // Show forgot password
+        function showForgotPassword() {
+            alert('Silakan hubungi administrator sistem untuk reset password.\n\nKontak:\n• Email: admin@dinkesjepara.go.id\n• Telp: (0291) 591717\n• WhatsApp: 0812-3456-7890');
+        }
+
+        // Auto-focus username on load
+        window.addEventListener('load', function() {
+            document.getElementById('username').focus();
+            console.log("Page loaded, username focused");
+        });
+
+        // Remember me functionality
+        window.addEventListener('load', function() {
+            if (typeof Storage !== "undefined") {
+                const rememberedUser = localStorage.getItem('rememberedUser');
+                if (rememberedUser) {
+                    document.getElementById('username').value = rememberedUser;
+                    document.getElementById('remember').checked = true;
+                    document.getElementById('password').focus();
+                }
+            }
+        });
+
+        // Handle remember me on form submit
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            if (typeof Storage !== "undefined") {
+                const remember = document.getElementById('remember').checked;
+                const username = document.getElementById('username').value;
+                
+                if (remember) {
+                    localStorage.setItem('rememberedUser', username);
+                } else {
+                    localStorage.removeItem('rememberedUser');
+                }
+            }
+        });
+
+        // Test function - bisa dihapus nanti
+        function testLogin() {
+            document.getElementById('username').value = 'demo';
+            document.getElementById('password').value = 'demo';
+            console.log("Test credentials filled");
+        }
+
+        // Keyboard shortcuts for testing - hapus di production
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 't') {
+                e.preventDefault();
+                testLogin();
+            }
+        });
+    </script>
+</body>
+</html>

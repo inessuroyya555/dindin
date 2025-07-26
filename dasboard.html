@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem RKAP Puskesmas - Dinas Kesehatan</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            color: #2c3e50;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: #f8f9fa;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .input-section h3 {
+            color: #495057;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #29b6f6 0%, #81c784 100%);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .currency {
+            text-align: right;
+            font-family: 'Courier New', monospace;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-card i {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .summary-card h3 {
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-card .amount {
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-pendapatan { border-left: 5px solid #28a745; }
+        .card-pendapatan i { color: #28a745; }
+        .card-pendapatan .amount { color: #28a745; }
+
+        .card-pengeluaran { border-left: 5px solid #dc3545; }
+        .card-pengeluaran i { color: #dc3545; }
+        .card-pengeluaran .amount { color: #dc3545; }
+
+        .card-saldo { border-left: 5px solid #007bff; }
+        .card-saldo i { color: #007bff; }
+        .card-saldo .amount { color: #007bff; }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-hospital"></i> Sistem RKAP Puskesmas</h1>
+        <p>Rekapitulasi Keuangan Berkelanjutan - Dinas Kesehatan Kabupaten Jepara</p>
+    </div>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showTab('input')">
+                <i class="fas fa-edit"></i> Input Data
+            </button>
+            <button class="nav-tab" onclick="showTab('rekap-bulanan')">
+                <i class="fas fa-calendar-alt"></i> Rekap Bulanan
+            </button>
+            <button class="nav-tab" onclick="showTab('rekap-tahunan')">
+                <i class="fas fa-chart-line"></i> Rekap Tahunan
+            </button>
+            <button class="nav-tab" onclick="showTab('rekap-manual')">
+                <i class="fas fa-calendar-check"></i> Rekap Manual
+            </button>
+            <button class="nav-tab" onclick="showTab('history')">
+                <i class="fas fa-history"></i> Riwayat Data
+            </button>
+        </div>
+
+        <!-- Tab Input Data -->
+        <div id="input" class="tab-content active">
+            <h2><i class="fas fa-edit"></i> Input Data Keuangan Puskesmas</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="puskesmas">Pilih Puskesmas:</label>
+                    <select id="puskesmas">
+                        <option value="">-- Pilih Puskesmas --</option>
+                        <option value="KELING 1">KELING 1</option>
+                        <option value="KELING 2">KELING 2</option>
+                        <option value="BANGSRI 1">BANGSRI 1</option>
+                        <option value="BANGSRI 2">BANGSRI 2</option>
+                        <option value="KEMBANG">KEMBANG</option>
+                        <option value="MLONGGO">MLONGGO</option>
+                        <option value="PAKIS AJI">PAKIS AJI</option>
+                        <option value="JEPARA">JEPARA</option>
+                        <option value="TAHUNAN">TAHUNAN</option>
+                        <option value="BATEALIT">BATEALIT</option>
+                        <option value="KEDUNG 1">KEDUNG 1</option>
+                        <option value="KEDUNG 2">KEDUNG 2</option>
+                        <option value="PECANGAAN">PECANGAAN</option>
+                        <option value="KALINYAMATAN">KALINYAMATAN</option>
+                        <option value="WELAHAN 1">WELAHAN 1</option>
+                        <option value="WELAHAN 2">WELAHAN 2</option>
+                        <option value="MAYONG 1">MAYONG 1</option>
+                        <option value="MAYONG 2">MAYONG 2</option>
+                        <option value="NALUMSARI 1">NALUMSARI 1</option>
+                        <option value="NALUMSARI 2">RSUD Kartini</option>
+                        <option value="KARIMUN">KARIMUN</option>
+                        <option value="DONOROJO">DONOROJO</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="bulan">Bulan:</label>
+                    <select id="bulan">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tahun">Tahun:</label>
+                    <select id="tahun">
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025" selected>2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h3><i class="fas fa-wallet"></i> Saldo Awal</h3>
+                <div class="form-group">
+                    <label for="saldo_awal">Saldo Awal (Rp):</label>
+                    <input type="number" id="saldo_awal" placeholder="0">
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h3><i class="fas fa-arrow-up"></i> Pendapatan</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jasa_layanan">Jasa Layanan (Rp):</label>
+                        <input type="number" id="jasa_layanan" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="klaim_dinas">Klaim Dinas (Rp):</label>
+                        <input type="number" id="klaim_dinas" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="kapitasi">Kapitasi (Rp):</label>
+                        <input type="number" id="kapitasi" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="non_kapitasi">Non Kapitasi (Rp):</label>
+                        <input type="number" id="non_kapitasi" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jagir">Jagir (Rp):</label>
+                        <input type="number" id="jagir" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="parkir">Parkir (Rp):</label>
+                        <input type="number" id="parkir" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="sewa">Sewa (Rp):</label>
+                        <input type="number" id="sewa" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="lain2">Lain-lain (Rp):</label>
+                        <input type="number" id="lain2" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h3><i class="fas fa-arrow-down"></i> Pengeluaran</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pegawai">Pegawai (Rp):</label>
+                        <input type="number" id="pegawai" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="barang_jasa">Barang dan Jasa (Rp):</label>
+                        <input type="number" id="barang_jasa" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                    <div class="form-group">
+                        <label for="modal">Modal (Rp):</label>
+                        <input type="number" id="modal" placeholder="0" oninput="calculateTotals()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="summary-cards">
+                <div class="summary-card card-pendapatan">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Total Pendapatan</h3>
+                    <div class="amount" id="total_pendapatan">Rp 0</div>
+                </div>
+                <div class="summary-card card-pengeluaran">
+                    <i class="fas fa-minus-circle"></i>
+                    <h3>Total Pengeluaran</h3>
+                    <div class="amount" id="total_pengeluaran">Rp 0</div>
+                </div>
+                <div class="summary-card card-saldo">
+                    <i class="fas fa-coins"></i>
+                    <h3>Saldo Akhir</h3>
+                    <div class="amount" id="saldo_akhir">Rp 0</div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="saveData()">
+                <i class="fas fa-save"></i> Simpan Data
+            </button>
+        </div>
+
+        <!-- Tab Rekap Bulanan -->
+        <div id="rekap-bulanan" class="tab-content">
+            <h2><i class="fas fa-calendar-alt"></i> Rekap Bulanan</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="rekap_bulan">Bulan:</label>
+                    <select id="rekap_bulan">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rekap_tahun">Tahun:</label>
+                    <select id="rekap_tahun">
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025" selected>2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-info" onclick="loadRekapBulanan()">
+                <i class="fas fa-search"></i> Tampilkan Rekap
+            </button>
+
+            <div id="rekap-bulanan-content"></div>
+        </div>
+
+        <!-- Tab Rekap Manual -->
+        <div id="rekap-manual" class="tab-content">
+            <h2><i class="fas fa-calendar-check"></i> Rekap Manual (Periode Kustom)</h2>
+            <p>Atur periode sesuai kebutuhan untuk melihat rekapitulasi data.</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="manual_puskesmas">Pilih Puskesmas (Opsional):</label>
+                    <select id="manual_puskesmas">
+                        <option value="">-- Semua Puskesmas --</option>
+                        <option value="KELING 1">KELING 1</option>
+                        <option value="KELING 2">KELING 2</option>
+                        <option value="BANGSRI 1">BANGSRI 1</option>
+                        <option value="BANGSRI 2">BANGSRI 2</option>
+                        <option value="KEMBANG">KEMBANG</option>
+                        <option value="MLONGGO">MLONGGO</option>
+                        <option value="PAKIS AJI">PAKIS AJI</option>
+                        <option value="JEPARA">JEPARA</option>
+                        <option value="TAHUNAN">TAHUNAN</option>
+                        <option value="BATEALIT">BATEALIT</option>
+                        <option value="KEDUNG 1">KEDUNG 1</option>
+                        <option value="KEDUNG 2">KEDUNG 2</option>
+                        <option value="PECANGAAN">PECANGAAN</option>
+                        <option value="KALINYAMATAN">KALINYAMATAN</option>
+                        <option value="WELAHAN 1">WELAHAN 1</option>
+                        <option value="WELAHAN 2">WELAHAN 2</option>
+                        <option value="MAYONG 1">MAYONG 1</option>
+                        <option value="MAYONG 2">MAYONG 2</option>
+                        <option value="NALUMSARI 1">NALUMSARI 1</option>
+                        <option value="NALUMSARI 2">RSUD Kartini</option>
+                        <option value="KARIMUN">KARIMUN</option>
+                        <option value="DONOROJO">DONOROJO</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rekap_tahun">Tahun:</label>
+                    <select id="rekap_tahun">
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025" selected>2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="manual_bulan_dari">Dari Bulan:</label>
+                    <select id="manual_bulan_dari">
+                        <option value="1" selected>Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="manual_bulan_sampai">Sampai Bulan:</label>
+                    <select id="manual_bulan_sampai">
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12" selected>Desember</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-info" onclick="loadRekapManual()">
+                <i class="fas fa-search"></i> Tampilkan Rekap Manual
+            </button>
+
+            <div id="rekap-manual-content"></div>
+        </div>
+
+        <!-- Tab Rekap Tahunan -->
+        <div id="rekap-tahunan" class="tab-content">
+            <h2><i class="fas fa-chart-line"></i> Rekap Tahunan</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="rekap_tahun">Tahun:</label>
+                    <select id="rekap_tahun">
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                        <option value="2025" selected>2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
+                        <option value="2029">2029</option>
+                        <option value="2030">2030</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-info" onclick="loadRekapTahunan()">
+                <i class="fas fa-search"></i> Tampilkan Rekap Tahunan
+            </button>
+
+            <div id="rekap-tahunan-content"></div>
+        </div>
+
+        <!-- Tab History -->
+        <div id="history" class="tab-content">
+            <h2><i class="fas fa-history"></i> Riwayat Data</h2>
+            <p>Menampilkan seluruh data yang telah diinput ke dalam sistem.</p>
+            
+            <button class="btn btn-info" onclick="loadHistory()">
+                <i class="fas fa-refresh"></i> Muat Riwayat
+            </button>
+
+            <div id="history-content"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2025 Sistem RKAP Puskesmas - Dinas Kesehatan Kabupaten Jepara</p>
+    </div>
+
+    <script>
+        // Data storage - using memory storage instead of localStorage
+        let dataStorage = [];
+
+        // Tab navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Calculate totals
+        function calculateTotals() {
+            const jasa_layanan = parseFloat(document.getElementById('jasa_layanan').value) || 0;
+            const klaim_dinas = parseFloat(document.getElementById('klaim_dinas').value) || 0;
+            const kapitasi = parseFloat(document.getElementById('kapitasi').value) || 0;
+            const non_kapitasi = parseFloat(document.getElementById('non_kapitasi').value) || 0;
+            const jagir = parseFloat(document.getElementById('jagir').value) || 0;
+            const parkir = parseFloat(document.getElementById('parkir').value) || 0;
+            const sewa = parseFloat(document.getElementById('sewa').value) || 0;
+            const lain2 = parseFloat(document.getElementById('lain2').value) || 0;
+
+            const pegawai = parseFloat(document.getElementById('pegawai').value) || 0;
+            const barang_jasa = parseFloat(document.getElementById('barang_jasa').value) || 0;
+            const modal = parseFloat(document.getElementById('modal').value) || 0;
+
+            const saldo_awal = parseFloat(document.getElementById('saldo_awal').value) || 0;
+
+            const totalPendapatan = jasa_layanan + klaim_dinas + kapitasi + non_kapitasi + jagir + parkir + sewa + lain2;
+            const totalPengeluaran = pegawai + barang_jasa + modal;
+            const saldoAkhir = saldo_awal + totalPendapatan - totalPengeluaran;
+
+            document.getElementById('total_pendapatan').textContent = formatCurrency(totalPendapatan);
+            document.getElementById('total_pengeluaran').textContent = formatCurrency(totalPengeluaran);
+            document.getElementById('saldo_akhir').textContent = formatCurrency(saldoAkhir);
+        }
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Save data
+        function saveData() {
+            const puskesmas = document.getElementById('puskesmas').value;
+            const bulan = document.getElementById('bulan').value;
+            const tahun = document.getElementById('tahun').value;
+
+            if (!puskesmas) {
+                alert('Silakan pilih puskesmas terlebih dahulu!');
+                return;
+            }
+
+            const data = {
+                id: `${puskesmas}_${bulan}_${tahun}`,
+                puskesmas: puskesmas,
+                bulan: parseInt(bulan),
+                tahun: parseInt(tahun),
+                saldo_awal: parseFloat(document.getElementById('saldo_awal').value) || 0,
+                jasa_layanan: parseFloat(document.getElementById('jasa_layanan').value) || 0,
+                klaim_dinas: parseFloat(document.getElementById('klaim_dinas').value) || 0,
+                kapitasi: parseFloat(document.getElementById('kapitasi').value) || 0,
+                non_kapitasi: parseFloat(document.getElementById('non_kapitasi').value) || 0,
+                jagir: parseFloat(document.getElementById('jagir').value) || 0,
+                parkir: parseFloat(document.getElementById('parkir').value) || 0,
+                sewa: parseFloat(document.getElementById('sewa').value) || 0,
+                lain2: parseFloat(document.getElementById('lain2').value) || 0,
+                pegawai: parseFloat(document.getElementById('pegawai').value) || 0,
+                barang_jasa: parseFloat(document.getElementById('barang_jasa').value) || 0,
+                modal: parseFloat(document.getElementById('modal').value) || 0,
+                created_at: new Date().toISOString()
+            };
+
+            // Calculate totals
+            data.total_pendapatan = data.jasa_layanan + data.klaim_dinas + data.kapitasi + data.non_kapitasi + data.jagir + data.parkir + data.sewa + data.lain2;
+            data.total_pengeluaran = data.pegawai + data.barang_jasa + data.modal;
+            data.saldo_akhir = data.saldo_awal + data.total_pendapatan - data.total_pengeluaran;
+
+            // Check if data exists, update or add
+            const existingIndex = dataStorage.findIndex(item => item.id === data.id);
+            if (existingIndex >= 0) {
+                dataStorage[existingIndex] = data;
+            } else {
+                dataStorage.push(data);
+    localStorage.setItem("dataRKAP", JSON.stringify(dataStorage));
+            }
+
+            // Data saved to memory
+
+            // Show success message
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success';
+            alertDiv.innerHTML = '<i class="fas fa-check-circle"></i> Data berhasil disimpan!';
+            document.getElementById('input').insertBefore(alertDiv, document.getElementById('input').firstChild);
+
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+
+            // Reset form
+            resetForm();
+        }
+
+        // Reset form
+        function resetForm() {
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.value = '';
+            });
+            calculateTotals();
+        }
+
+        // Load rekap bulanan
+        function loadRekapBulanan() {
+            const bulan = parseInt(document.getElementById('rekap_bulan').value);
+            const tahun = parseInt(document.getElementById('rekap_tahun').value);
+
+            const filteredData = dataStorage.filter(item => 
+                item.bulan === bulan && item.tahun === tahun
+            );
+
+            const months = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            let html = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Rekap Bulan ${months[bulan]} ${tahun} - ${filteredData.length} Puskesmas
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Puskesmas</th>
+                                <th>Saldo Awal</th>
+                                <th>Total Pendapatan</th>
+                                <th>Total Pengeluaran</th>
+                                <th>Saldo Akhir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            let totalSaldoAwal = 0;
+            let totalPendapatan = 0;
+            let totalPengeluaran = 0;
+            let totalSaldoAkhir = 0;
+
+            filteredData.forEach((item, index) => {
+                totalSaldoAwal += item.saldo_awal;
+                totalPendapatan += item.total_pendapatan;
+                totalPengeluaran += item.total_pengeluaran;
+                totalSaldoAkhir += item.saldo_akhir;
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.puskesmas}</td>
+                        <td class="currency">${formatCurrency(item.saldo_awal)}</td>
+                        <td class="currency">${formatCurrency(item.total_pendapatan)}</td>
+                        <td class="currency">${formatCurrency(item.total_pengeluaran)}</td>
+                        <td class="currency">${formatCurrency(item.saldo_akhir)}</td>
+                    </tr>
+                `;
+            });
+
+            // Add total row
+            html += `
+                    <tr style="background-color: #f8f9fa; font-weight: bold;">
+                        <td colspan="2">TOTAL</td>
+                        <td class="currency">${formatCurrency(totalSaldoAwal)}</td>
+                        <td class="currency">${formatCurrency(totalPendapatan)}</td>
+                        <td class="currency">${formatCurrency(totalPengeluaran)}</td>
+                        <td class="currency">${formatCurrency(totalSaldoAkhir)}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>`;
+
+            document.getElementById('rekap-bulanan-content').innerHTML = html;
+        }
+
+        // Load rekap tahunan
+        function loadRekapTahunan() {
+            const tahun = parseInt(document.getElementById('rekap_tahun_annual').value);
+
+            const filteredData = dataStorage.filter(item => item.tahun === tahun);
+
+            // Group by puskesmas and sum data
+            const groupedData = {};
+            filteredData.forEach(item => {
+                if (!groupedData[item.puskesmas]) {
+                    groupedData[item.puskesmas] = {
+                        puskesmas: item.puskesmas,
+                        saldo_awal: 0,
+                        total_pendapatan: 0,
+                        total_pengeluaran: 0,
+                        saldo_akhir: 0,
+                        bulan_count: 0
+                    };
+                }
+                groupedData[item.puskesmas].saldo_awal += item.saldo_awal;
+                groupedData[item.puskesmas].total_pendapatan += item.total_pendapatan;
+                groupedData[item.puskesmas].total_pengeluaran += item.total_pengeluaran;
+                groupedData[item.puskesmas].saldo_akhir += item.saldo_akhir;
+                groupedData[item.puskesmas].bulan_count++;
+            });
+
+            const rekapData = Object.values(groupedData);
+
+            let html = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Rekap Tahunan ${tahun} - ${rekapData.length} Puskesmas
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Puskesmas</th>
+                                <th>Bulan Input</th>
+                                <th>Total Saldo Awal</th>
+                                <th>Total Pendapatan</th>
+                                <th>Total Pengeluaran</th>
+                                <th>Total Saldo Akhir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            let totalSaldoAwal = 0;
+            let totalPendapatan = 0;
+            let totalPengeluaran = 0;
+            let totalSaldoAkhir = 0;
+
+            rekapData.forEach((item, index) => {
+                totalSaldoAwal += item.saldo_awal;
+                totalPendapatan += item.total_pendapatan;
+                totalPengeluaran += item.total_pengeluaran;
+                totalSaldoAkhir += item.saldo_akhir;
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.puskesmas}</td>
+                        <td>${item.bulan_count} bulan</td>
+                        <td class="currency">${formatCurrency(item.saldo_awal)}</td>
+                        <td class="currency">${formatCurrency(item.total_pendapatan)}</td>
+                        <td class="currency">${formatCurrency(item.total_pengeluaran)}</td>
+                        <td class="currency">${formatCurrency(item.saldo_akhir)}</td>
+                    </tr>
+                `;
+            });
+
+            // Add total row
+            html += `
+                    <tr style="background-color: #f8f9fa; font-weight: bold;">
+                        <td colspan="3">TOTAL</td>
+                        <td class="currency">${formatCurrency(totalSaldoAwal)}</td>
+                        <td class="currency">${formatCurrency(totalPendapatan)}</td>
+                        <td class="currency">${formatCurrency(totalPengeluaran)}</td>
+                        <td class="currency">${formatCurrency(totalSaldoAkhir)}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>`;
+
+            document.getElementById('rekap-tahunan-content').innerHTML = html;
+        }
+
+        // Load history
+        function loadHistory() {
+            const months = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            let html = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Total ${dataStorage.length} data tersimpan
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Puskesmas</th>
+                                <th>Periode</th>
+                                <th>Saldo Awal</th>
+                                <th>Total Pendapatan</th>
+                                <th>Total Pengeluaran</th>
+                                <th>Saldo Akhir</th>
+                                <th>Tanggal Input</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
+            // Sort by newest first
+            const sortedData = [...dataStorage].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            sortedData.forEach((item, index) => {
+                const periode = `${months[item.bulan]} ${item.tahun}`;
+                const tanggalInput = new Date(item.created_at).toLocaleDateString('id-ID');
+
+                html += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${item.puskesmas}</td>
+                        <td>${periode}</td>
+                        <td class="currency">${formatCurrency(item.saldo_awal)}</td>
+                        <td class="currency">${formatCurrency(item.total_pendapatan)}</td>
+                        <td class="currency">${formatCurrency(item.total_pengeluaran)}</td>
+                        <td class="currency">${formatCurrency(item.saldo_akhir)}</td>
+                        <td>${tanggalInput}</td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                </tbody>
+            </table>
+        </div>`;
+
+            document.getElementById('history-content').innerHTML = html;
+        }
+
+        // Load rekap manual
+        function loadRekapManual() {
+            const puskesmas = document.getElementById('manual_puskesmas').value;
+            const tahun = parseInt(document.getElementById('manual_tahun').value);
+            const bulanDari = parseInt(document.getElementById('manual_bulan_dari').value);
+            const bulanSampai = parseInt(document.getElementById('manual_bulan_sampai').value);
+
+            // Validasi periode
+            if (bulanDari > bulanSampai) {
+                alert('Bulan "Dari" tidak boleh lebih besar dari bulan "Sampai"!');
+                return;
+            }
+
+            // Filter data berdasarkan kriteria
+            let filteredData = dataStorage.filter(item => {
+                let matchTahun = item.tahun === tahun;
+                let matchBulan = item.bulan >= bulanDari && item.bulan <= bulanSampai;
+                let matchPuskesmas = puskesmas === '' || item.puskesmas === puskesmas;
+                return matchTahun && matchBulan && matchPuskesmas;
+            });
+
+            const months = ['', 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 
+                          'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+            let periodeText = `${months[bulanDari]} - ${months[bulanSampai]} ${tahun}`;
+            let puskesmasText = puskesmas === '' ? 'Semua Puskesmas' : puskesmas;
+
+            // Group data by puskesmas untuk akumulasi
+            const groupedData = {};
+            filteredData.forEach(item => {
+                if (!groupedData[item.puskesmas]) {
+                    groupedData[item.puskesmas] = {
+                        puskesmas: item.puskesmas,
+                        saldo_awal: 0,
+                        total_pendapatan: 0,
+                        total_pengeluaran: 0,
+                        saldo_akhir: 0,
+                        bulan_data: []
+                    };
+                }
+                groupedData[item.puskesmas].saldo_awal += item.saldo_awal;
+                groupedData[item.puskesmas].total_pendapatan += item.total_pendapatan;
+                groupedData[item.puskesmas].total_pengeluaran += item.total_pengeluaran;
+                groupedData[item.puskesmas].saldo_akhir += item.saldo_akhir;
+                groupedData[item.puskesmas].bulan_data.push(months[item.bulan]);
+            });
+
+            const rekapData = Object.values(groupedData);
+
+            let html = `
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> Rekap Manual: ${puskesmasText} | Periode: ${periodeText} | ${rekapData.length} Puskesmas ditemukan
+                </div>
+            `;
+
+            if (rekapData.length === 0) {
+                html += `
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> Tidak ada data yang ditemukan untuk periode dan puskesmas yang dipilih.
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Puskesmas</th>
+                                    <th>Bulan Data</th>
+                                    <th>Total Saldo Awal</th>
+                                    <th>Total Pendapatan</th>
+                                    <th>Total Pengeluaran</th>
+                                    <th>Total Saldo Akhir</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                let totalSaldoAwal = 0;
+                let totalPendapatan = 0;
+                let totalPengeluaran = 0;
+                let totalSaldoAkhir = 0;
+
+                rekapData.forEach((item, index) => {
+                    totalSaldoAwal += item.saldo_awal;
+                    totalPendapatan += item.total_pendapatan;
+                    totalPengeluaran += item.total_pengeluaran;
+                    totalSaldoAkhir += item.saldo_akhir;
+
+                    const bulanDataText = item.bulan_data.join(', ');
+
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${item.puskesmas}</td>
+                            <td>${bulanDataText}</td>
+                            <td class="currency">${formatCurrency(item.saldo_awal)}</td>
+                            <td class="currency">${formatCurrency(item.total_pendapatan)}</td>
+                            <td class="currency">${formatCurrency(item.total_pengeluaran)}</td>
+                            <td class="currency">${formatCurrency(item.saldo_akhir)}</td>
+                        </tr>
+                    `;
+                });
+
+                // Add total row
+                html += `
+                        <tr style="background-color: #f8f9fa; font-weight: bold;">
+                            <td colspan="3">TOTAL KESELURUHAN</td>
+                            <td class="currency">${formatCurrency(totalSaldoAwal)}</td>
+                            <td class="currency">${formatCurrency(totalPendapatan)}</td>
+                            <td class="currency">${formatCurrency(totalPengeluaran)}</td>
+                            <td class="currency">${formatCurrency(totalSaldoAkhir)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Summary Cards -->
+            <div class="summary-cards" style="margin-top: 2rem;">
+                <div class="summary-card card-pendapatan">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Total Pendapatan Periode</h3>
+                    <div class="amount">${formatCurrency(totalPendapatan)}</div>
+                </div>
+                <div class="summary-card card-pengeluaran">
+                    <i class="fas fa-minus-circle"></i>
+                    <h3>Total Pengeluaran Periode</h3>
+                    <div class="amount">${formatCurrency(totalPengeluaran)}</div>
+                </div>
+                <div class="summary-card card-saldo">
+                    <i class="fas fa-coins"></i>
+                    <h3>Total Saldo Akhir Periode</h3>
+                    <div class="amount">${formatCurrency(totalSaldoAkhir)}</div>
+                </div>
+            </div>`;
+            }
+
+            document.getElementById('rekap-manual-content').innerHTML = html;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current month
+            const currentMonth = new Date().getMonth() + 1;
+            document.getElementById('bulan').value = currentMonth;
+            document.getElementById('rekap_bulan').value = currentMonth;
+            
+            calculateTotals();
+        });
+    
+// Ambil data dari localStorage saat halaman dibuka
+window.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("dataRKAP");
+  if (saved) {
+    dataStorage = JSON.parse(saved);
+    loadHistory(); // tampilkan ulang data yang sudah disimpan
+  }
+});
+
+</script>
+</body>
+</html>
